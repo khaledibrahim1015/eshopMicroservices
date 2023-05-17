@@ -20,7 +20,10 @@ namespace Catalog.API.Repositories
         public async Task<IEnumerable<Product>> GetProducts()
         {
             var filter = Builders<Product>.Filter.Empty;
-            return await _context.Products.Find(filter).ToListAsync();
+
+            return await _context.Products.
+                                Find(filter).
+                                    ToListAsync();
 
         }
 
@@ -30,16 +33,26 @@ namespace Catalog.API.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsByCategory(string categoryName)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.Category, categoryName);
-            return await _context.Products.Find(filter).ToListAsync();
+            var filter = Builders<Product>
+                                        .Filter
+                                           . Eq(p => p.Category, categoryName);
+
+
+            return await _context.Products
+                                        .Find(filter)
+                                            .ToListAsync();
 
 
         }
 
         public async Task<IEnumerable<Product>> GetProductsByName(string productName)
         {
-            var filter = new FilterDefinitionBuilder<Product>().Eq(p => p.Name, productName);
-            return await _context.Products.Find(filter).ToListAsync();
+            var filter = new FilterDefinitionBuilder<Product>()
+                                                    .Eq(p => p.Name, productName);
+
+            return await _context.Products
+                                    .Find(filter)
+                                        .ToListAsync();
 
 
         }
@@ -47,21 +60,24 @@ namespace Catalog.API.Repositories
         public async Task<Product> GetProductById(string id)
         {
 
-            return await _context.Products.Find(p => p.Id == id).FirstOrDefaultAsync();
+            return await _context.Products
+                                    .Find(p => p.Id == id)
+                                          .FirstOrDefaultAsync();
 
         }
 
         public async Task CreateProduct(Product product)
-        {
-           await _context.Products.InsertOneAsync(product);
-        }
+            =>  await _context.Products.InsertOneAsync(product);
+
 
        
 
         public async Task<bool> UpdateProduct(Product product)
         {
            
-            var filter  =  Builders<Product>.Filter.Eq(p => p.Id ,product.Id);
+            var filter  =  Builders<Product>
+                                        .Filter
+                                            .Eq(p => p.Id ,product.Id);
 
            var updateResult= await _context.Products.ReplaceOneAsync(filter: filter, replacement: product);
 
@@ -71,9 +87,18 @@ namespace Catalog.API.Repositories
 
 
 
-        public Task<bool> DeleteProduct(string id)
+        public async Task<bool> DeleteProduct(string id)
         {
-            throw new System.NotImplementedException();
+            
+            var filter  =  Builders<Product>.Filter.Eq(p=>p.Id , id);
+
+            var DeleteResult= await _context.Products
+                                           .DeleteOneAsync(filter);
+
+            if (DeleteResult.IsAcknowledged && DeleteResult.DeletedCount > 0)
+                return true;
+            return false;
+
         }
 
 

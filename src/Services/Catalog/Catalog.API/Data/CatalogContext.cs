@@ -21,10 +21,13 @@ namespace Catalog.API.Data
             Products = db.GetCollection<Product>(configuration.GetValue<string>("DatabaseSettings:CollectionName"));
 
 
-
+            // Seed Data In Database 
+            CatalogContextSeed.SeedData(Products);
         }
 
 
 
     }
+
+    
 }
